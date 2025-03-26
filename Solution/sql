@@ -1,0 +1,49 @@
+SELECT * FROM pizza_sales
+
+SELECT SUM(total_price) AS Total_price FROM pizza_sales
+
+SELECT SUM(total_price) / COUNT(DISTINCT order_id) AS Average_value_of_total_order FROM pizza_sales
+
+SELECT SUM(quantity) AS Quantity_pizza_sold FROM pizza_sales
+
+SELECT COUNT(DISTINCT order_id) AS Total_order FROM pizza_sales
+
+SELECT CAST(CAST(SUM(quantity) AS DECIMAL(10,2)) / CAST(COUNT(DISTINCT order_id) AS DECIMAL(10, 2)) AS DECIMAL(10,2)) AS Average_value_per_order FROM pizza_sales
+
+SELECT DATENAME(DW, order_date) as Order_days, COUNT(DISTINCT order_id) AS Total_orders FROM pizza_sales
+GROUP BY DATENAME(DW, order_date)
+
+SELECT DATENAME(MONTH, order_date) as Month_name, COUNT(DISTINCT order_id) AS Total_orders FROM pizza_sales
+GROUP BY DATENAME(MONTH, order_date)
+ORDER BY Total_orders DESC
+
+SELECT 
+    pizza_category, 
+    SUM(total_price) AS category_sales, 
+(SUM(total_price) / (SELECT SUM(total_price) FROM pizza_sales WHERE MONTH(order_date) IN (3, 11))) * 100 AS percentage_sales_of_pizza_category_in_March_and_November
+FROM pizza_sales
+WHERE MONTH(order_date) IN (3, 11)
+GROUP BY pizza_category
+ORDER BY percentage_sales_of_pizza_category_in_March_and_November DESC;
+
+SELECT 
+    pizza_category, 
+    SUM(total_price) AS category_sales, 
+(SUM(total_price) / (SELECT SUM(total_price) FROM pizza_sales)) * 100 AS percentage_sales_of_pizza_category_in_first_quarter_of_year
+FROM pizza_sales
+WHERE DATEPART(QUARTER, order_date) = 1
+GROUP BY pizza_category
+ORDER BY percentage_sales_of_pizza_category_in_first_quarter_of_year DESC;
+
+SELECT pizza_category, ROUND((SUM(total_price) / (SELECT SUM(total_price) FROM pizza_sales) * 100), 2) AS Percentage_of_sales_by_pizza_category FROM pizza_sales
+GROUP BY pizza_category
+
+SELECT TOP 5 pizza_name, SUM(total_price) AS Total_revenew_for_each_pizza_name FROM pizza_sales
+GROUP BY pizza_name
+ORDER BY Total_revenew_for_each_pizza_name desc
+
+
+SELECT TOP 5 pizza_size, SUM(total_price) AS Total_revenue, ROUND((SUM(total_price) / (SELECT SUM(total_price) FROM pizza_sales) * 100), 2) AS Percentage_of_sales_by_pizza_size FROM pizza_sales
+GROUP BY pizza_size
+ORDER BY Percentage_of_sales_by_pizza_size desc
+
