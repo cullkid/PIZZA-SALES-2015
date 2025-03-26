@@ -47,3 +47,4 @@ SELECT TOP 5 pizza_size, SUM(total_price) AS Total_revenue, ROUND((SUM(total_pri
 GROUP BY pizza_size
 ORDER BY Percentage_of_sales_by_pizza_size desc
 
+
